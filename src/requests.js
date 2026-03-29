@@ -22,6 +22,11 @@ export const createAnecdote = async content => {
     body: JSON.stringify(newAnecdote)
   })
 
+  if (!response.ok) {
+    const errorData = await response.json()
+    throw new Error(errorData.error || 'failed to create anecdote')
+  }
+
   return response.json()
 }
 
