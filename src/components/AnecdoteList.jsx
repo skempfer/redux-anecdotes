@@ -1,17 +1,17 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 
-import { setNotification } from '../reducers/notificationReducer'
+import { useNotificationDispatch } from '../NotificationContext'
 import { voteAnecdote } from '../requests'
 
 const AnecdoteList = () => {
-  const dispatch = useDispatch()
+  const setNotification = useNotificationDispatch()
   const queryClient = useQueryClient()
   const voteAnecdoteMutation = useMutation({
     mutationFn: voteAnecdote,
     onSuccess: anecdote => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-      dispatch(setNotification(`You voted '${anecdote.content}'`, 5))
+      setNotification(`You voted '${anecdote.content}'`, 5)
     }
   })
 

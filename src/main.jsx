@@ -3,6 +3,7 @@ import { Provider } from 'react-redux'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 import App from './App'
+import { NotificationContextProvider } from './NotificationContext'
 import store from './store'
 
 const queryClient = new QueryClient()
@@ -10,7 +11,9 @@ const queryClient = new QueryClient()
 ReactDOM.createRoot(document.getElementById('root')).render(
   <QueryClientProvider client={queryClient}>
     <Provider store={store}>
-      <App />
+      <NotificationContextProvider>
+        <App />
+      </NotificationContextProvider>
     </Provider>
   </QueryClientProvider>
 )
