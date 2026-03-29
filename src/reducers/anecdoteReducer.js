@@ -1,15 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = anecdote => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
-
 const initialState = []
 
 const anecdoteSlice = createSlice({
@@ -26,26 +16,39 @@ const anecdoteSlice = createSlice({
         anecdoteToVote.votes += 1
       }
     },
-    createAnecdote: {
-      reducer(state, action) {
-        state.push(action.payload)
-      },
-      prepare(content) {
-        return {
-          payload: asObject(content)
-        }
-      }
+    appendAnecdote(state, action) {
+      state.push(action.payload)
     }
   }
 })
 
-export const { setAnecdotes, voteAnecdote, createAnecdote } = anecdoteSlice.actions
+export const { setAnecdotes, voteAnecdote, appendAnecdote } = anecdoteSlice.actions
 
 export const initializeAnecdotes = () => {
   return async dispatch => {
     const response = await fetch('http://localhost:3001/anecdotes')
     const anecdotes = await response.json()
     dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newAnecdote = {
+      content,
+      votes: 0
+    }
+
+    const response = await fetch('http://localhost:3001/anecdotes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(newAnecdote)
+    })
+
+    const createdAnecdote = await response.json()
+    dispatch(appendAnecdote(createdAnecdote))
   }
 }
 
